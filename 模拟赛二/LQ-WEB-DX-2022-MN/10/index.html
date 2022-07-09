@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>test</title>
+    <script src="./js/vue.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <style>
+        input {
+            width: 200px;
+            height: 32px;
+            padding-left: 5px;
+        }
+        /* 法二 */
+        /* .title {
+            background-color: yellow;
+        } */
+    </style>
+</head>
+
+<body>
+    <!-- 需求：输入待查找的字段，输出包含该字段的所有菜单数据。
+    1、若该菜单有父级菜单，则返回其父级菜单及同胞菜单。
+    2、若该菜单有子级菜单，则返回该菜单及其下子级菜单。
+    3、若该菜单既无父级也无子级，则返回菜单本身即可。
+    测试字段：查询、首页、管理、配置、维护 -->
+    <div id="app">
+        <input type="text" placeholder="请输入要搜索的菜单内容" v-model="title" />
+        <ul>
+            <li v-for="(item,index) in list" :key="item.meta.title">
+                <span :style="{'background-color': item.meta.title.includes(title)&&title!==''?'yellow':''}">{{item.meta.title}}</span>
+                <ul v-if="item.children">
+                    <li v-for="(cln,indexC) in item.children" :key="cln.meta.title">
+                        <span :style="{'background-color': cln.meta.title.includes(title)&&title!==''?'yellow':''}">{{cln.meta.title}}</span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- 法二 -->
+    <!-- <div id="app">
+        <input type="text" v-model="value" placeholder="请输入要搜索的菜单内容"/>
+        <ul>
+            <li v-for="(item,index) in list" v-if="!item.ishide">
+                <span :class="{'title':item.meta.title.includes(value)&&value}" >{{item.meta.title}}</span>
+                <ul v-if="item.children">
+                    <li v-for="(item2,index2) in item.children" >
+                        <span :class="{'title':item2.meta.title.includes(value)&&value}" >{{item2.meta.title}}</span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div> -->
+</body>
+<script type="text/javascript" src="./js/index.js"></script>
+
+</html>

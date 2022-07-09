@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>任务管理器</title>
+
+    <link type="text/css" href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="box">
+        <div class="head">
+            <h2>Todos</h2>
+            <p>罗列日常计划，做一个时间管理大师！</p>
+            <div class="input">
+                <span>内容</span>
+                <input type="text" placeholder="请输入你要做的事" v-model="text" />
+                <span id="add" @click="add">确认</span>
+            </div>
+        </div>
+
+        <ul class="list">
+            <li v-if="!list.length">暂无数据</li>
+            <li v-else v-for="(item,index) in list" :key="index">
+                <!-- 前面的序号 -->
+                <span class="xh">{{index+1}}</span>
+                <!-- 列表内容 -->
+                <span>{{item}}</span>
+                <!-- 删除按钮 -->
+                <span class="qc" @click="remove(index)"></span>
+            </li>
+            <!-- <li>
+          <span class="xh">2</span>
+          <span>吃饭</span>
+          <span class="qc"></span>
+        </li>
+        <li>
+          <span class="xh">3</span>
+          <span>睡觉</span>
+          <span class="qc"></span>
+        </li> -->
+            <li v-if="list.length">
+                <b> 总数：{{list.length}} </b>
+                <b id="clear" @click="clear">清除</b>
+            </li>
+        </ul>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        var top = new Vue({
+            el: "#box",
+            // 在此处补全代码，实现所需功能
+            data: {
+                list: [],
+                text: ''
+            },
+            methods: {
+                add() {
+                    if (this.text !== '') {
+                        this.list.push(this.text)
+                        this.text = ''
+                    }
+                },
+                remove(index) {
+                    this.list.splice(index, 1)
+                },
+                clear() {
+                    this.list = []
+                }
+            }
+
+
+        });
+    </script>
+</body>
+
+</html>
