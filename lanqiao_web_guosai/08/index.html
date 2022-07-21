@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>天气趋势</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="./js/axios.js"></script>
+    <script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+    <script
+      src="js/echarts.min.js"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="top-bar">2022年 Y 城全年温度统计图</div>
+      <!-- 主体 -->
+      <div class="container">
+        <!-- 月份 -->
+        <div class="month">
+          <ul>
+            <!-- TODO：待补充代码 在下面的 li 标签中完成 12个月份 (即 monthList) 的渲染  -->
+            <li :class="{active:index==showMonth}" v-for="(value,key,index) of monthList" @click='changeMonth(value,key,index)'>{{value}}</li>
+          </ul>
+        </div>
+        <div class="chart">
+          <!-- TODO：待补充代码  -->
+          <!-- currentMonth  未来七天和本月 tab 切换，只有当前月才显示 -->
+          <div id="currentMonth">
+            <div class="title">
+              <h3>{{typeTitle}}</h3>
+              <div class="type">
+                <span id="seven" :class="{active:isSeven}" @click="getSeven()">未来7天</span>
+                <span id="current" :class="{active:!isSeven}" @click="getMonth()">本月</span>
+              </div>
+            </div>
+          </div>
+          <div id="chart"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  // TODO：待补充代码
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      chart: null, // 图表
+      chartOptions: null, // 图表配置项
+      typeTitle: "本月天气",
+      monthList: {
+        January: "1月",
+        February: "2月",
+        March: "3月",
+        April: "4月",
+        May: "5月",
+        June: "6月",
+        July: "7月",
+        August: "8月",
+        September: "9月",
+        October: "10月",
+        November: "11月",
+        December: "12月",
+      },
+      month_data:[],
+      // 正在显示的月份
+      showMonth:0,
+      // x轴表示day数
+      xDayArr:[],
+      // x轴数据备份
+      xDayArrOri:[],
+      // y轴表示温度
+      yTemArr:[],
+      // y轴备份
+      yTemArrOri:[],
+      // 表示是否是7天
+      isSeven:false
+
+    },
+    mounted: async function () {
+      let result = await axios.get(`./js/weather.json`)
+      this.month_data = JSON.parse(JSON.stringify(result.data))
+      this.yTemArr = this.month_data[0].January
+      this.yTemArrOri = JSON.parse(JSON.stringify(this.yTemArr))
+        for(var num = 1;num<=this.month_data[0].January.length;num++){
+          this.xDayArr.push(num)
+        }
+        this.xDayArrOri = JSON.parse(JSON.stringify(this.xDayArr))
+      // 初始化 echarts
+      this.$nextTick(() => {
+        this.initChart();
+      })
+    },
+    methods: {
+      initChart() {
+        // 初始化图表
+        this.chart = echarts.init(document.getElementById("chart"));
+        // 配置项
+        this.chartOptions = {
+          grid: {
+            top: 35,
+            bottom: 5,
+            left: 10,
+            right: 10,
+            containLabel: true,
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              lineStyle: {
+                color: {
+                  type: "linear",
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: "rgba(255,255,255,0)",
+                    },
+                    {
+                      offset: 0.5,
+                      color: "rgba(255,255,255,1)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(255,255,255,0)",
+                    },
+                  ],
+                  global: false,
+                },
+              },
+            },
+          },
+          xAxis: [
+            {
+              type: "category",
+              boundaryGap: true,
+              axisLabel: {
+                formatter: "{value}",
+                fontSize: 12,
+                margin: 20,
+                textStyle: {
+                  color: "#bfbfbf",
+                },
+              },
+              axisLine: {
+                lineStyle: {
+                  color: "#e9e9e9",
+                },
+              },
+              splitLine: {
+                show: true,
+                lineStyle: {
+                  color: "#f7f7f7",
+                },
+              },
+              axisTick: {
+                show: false,
+              },
+              // x 轴显示的数据，日期
+              data: this.xDayArr,
+            },
+          ],
+          yAxis: [
+            {
+              boundaryGap: false,
+              type: "value",
+              axisLabel: {
+                textStyle: {
+                  color: "#bfbfbf",
+                },
+                formatter: `{value}\u2103`,
+              },
+              nameTextStyle: {
+                color: "#fff",
+                fontSize: 12,
+                lineHeight: 40,
+              },
+              splitLine: {
+                lineStyle: {
+                  color: "#f7f7f7",
+                },
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  color: "#e9e9e9",
+                },
+              },
+              axisTick: {
+                show: false,
+              },
+            },
+          ],
+          series: [
+            {
+              name: "天气",
+              type: "line",
+              smooth: false,
+              showSymbol: false,
+              symbolSize: 0,
+              zlevel: 3,
+              itemStyle: {
+                color: "#ff6600",
+                borderColor: "#a3c8d8",
+              },
+              lineStyle: {
+                normal: {
+                  width: 3,
+                  color: "#ff6600",
+                },
+              },
+              areaStyle: {
+                normal: {
+                  color: new echarts.graphic.LinearGradient(
+                    0,
+                    0,
+                    0,
+                    1,
+                    [
+                      {
+                        offset: 0,
+                        color: "#ff6600",
+                      },
+                      {
+                        offset: 0.8,
+                        color: "#ff9900",
+                      },
+                    ],
+                    false
+                  ),
+                },
+              },
+              //  Y 轴显示的数据，即温度数据
+              data: this.yTemArr,
+            },
+          ],
+        };
+
+        // 调用此方法设置 echarts 数据
+        this.chart.setOption(this.chartOptions);
+      },
+      // 点击事件换月份
+      changeMonth(value,key,index){
+        this.xDayArr = []
+        this.showMonth = index
+        this.yTemArr = this.month_data[index][key]
+        this.yTemArrOri = JSON.parse(JSON.stringify(this.yTemArr))
+        for(var num = 1;num<=this.month_data[index][key].length;num++){
+          this.xDayArr.push(num)
+        }
+        this.xDayArrOri = JSON.parse(JSON.stringify(this.xDayArr))
+        this.initChart();
+      },
+
+      // 未来七天
+      getSeven(){
+        this.isSeven = true
+        this.xDayArr =  this.xDayArr.slice(0,7)
+        this.yTemArr = this.yTemArr.slice(0,7)
+        this.initChart();
+      },
+
+      // 未来一个月
+      getMonth(){
+        this.isSeven = false
+        this.xDayArr = JSON.parse(JSON.stringify(this.xDayArrOri))
+        this.yTemArr = JSON.parse(JSON.stringify(this.yTemArrOri))
+        this.initChart();
+      }
+    },
+  });
+</script>

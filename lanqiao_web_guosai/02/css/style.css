@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 960px;
+  margin: 0 auto;
+}
+
+.item {
+  display: block;
+  width: 66px;
+  height: 66px;
+}
+
+.item img {
+  width: 100%;
+  height: auto;
+}
+
+[class$="box"] {
+  width: 204px;
+  height: 204px;
+  margin: 20px;
+  background-image: linear-gradient(
+    rgb(252, 213, 136) 33.3%,
+    #fff493 0,
+    #fdf45d 66.6%,
+    #f8da47 0
+  );
+  background-size: 6px 6px;
+}
+
+/* TODO：待补充代码 */
+/* 以下是我的答案 由于没有图片，因此只能给其背景图加颜色解决*/
+/* #box1 .item {
+  background-color: pink;
+  position: relative;
+  left: 68px;
+  top: 68px;
+}
+
+#box2 .item {
+  background-color: pink;
+}
+
+#box2 .item:nth-child(2) {
+  position: relative;
+  left: 136px;
+  top: 68px;
+}
+
+#box3 .item {
+  background-color: pink;
+}
+
+#box3 .item:nth-child(2) {
+  position: relative;
+  left: 68px;
+}
+
+#box3 .item:nth-child(3) {
+  position: relative;
+  left: 136px;
+} */
+
+
+/* 别人的答案 */
+#box1 .item,#box2 .item ,#box3 .item {
+  background: pink;
+}
+
+#box1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#box2,
+#box3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#box2 span:nth-child(2),
+#box3 span:nth-child(3) {
+  align-self: flex-end;
+}
+
+#box3 span:nth-child(2) {
+  align-self: center;
+}
+/* 
+  align-items:
+  你也可以设置align-items的值为flex-start，使 flex 元素按 flex 容器的顶部对齐，flex-end 使它们按 flex 容器的下部对齐，或者center使它们居中对齐。
+  在实例中尝试——我给出了 flex 容器的高度，以便你可以看到元素在容器中移动。
+
+  justify-content:
+  justify-content属性用来使元素在主轴方向上对齐，主轴方向是通过 flex-direction 设置的方向。
+  初始值是flex-start，元素从容器的起始线排列。
+  但是你也可以把值设置为flex-end，从终止线开始排列，或者center，在中间排列。
+
+  你也可以把值设置为space-between，把元素排列好之后的剩余空间拿出来，平均分配到元素之间，所以元素之间间隔相等。
+  或者使用space-around，使每个元素的左右空间相等。
+
+  align-self:
+  align-self 属性不适用于块类型的盒模型和表格单元。
+  auto
+  设置为父元素的 align-items 值。
+  normal
+  效果取决于当前的布局模式：
+  
+  绝对定位布局中，normal 在绝对定位的替代元素上表现为start，在所有其他绝对定位元素上表现为stretch。
+  在绝对定位的静态元素上表现为stretch。
+  flex 布局中表现为 stretch。
+  For grid items, this keyword leads to a behavior similar to the one of stretch, except for boxes with an aspect ratio or an intrinsic sizes where it behaves like start.
+  在块级和表格单元中无效。
+*/

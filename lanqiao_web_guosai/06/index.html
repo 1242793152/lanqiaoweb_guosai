@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>权限管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
+    <script src="./js/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+        <div class="left">
+          <h4>用户</h4>
+          <select multiple id="leftSelect">
+            <!-- 
+          选择多个选项在桌面电脑中
+          有几种方式在设置了 multiple 属性的 <select> 元素中选中多个选项：
+
+          鼠标用户可以按住 Ctrl, Command, 或 Shift 键（取决于你的操作系统）
+          然后点击不同选项以选择或取消选择。
+             -->
+            <option value="小花">小花</option>
+            <option value="二狗">二狗</option>
+            <option value="三叔">三叔</option>
+            <option value="闷油瓶">闷油瓶</option>
+            <option value="胡八一">胡八一</option>
+            <option value="胖子">胖子</option>
+            <option value="杨参谋">杨参谋</option>
+          </select>
+        </div>
+        <div class="center">
+          <a id="add">选中移动到右边</a>
+          <a id="addAll">全部移动到右边</a>
+          <a id="remove">选中移动到左边</a>
+          <a id="removeAll">全部移动到左边</a>
+        </div>
+        <div class="right">
+          <h4>管理员</h4>
+          <select multiple id="rightSelect"></select>
+        </div>
+      </div>
+
+      <table id="userList" class="user-list" cellspacing="0">
+        <!-- table会自动填充一个tbody元素 -->
+        <tr>
+          <td>用户名</td>
+          <td>权限</td>
+        </tr>
+      </table>
+    </div>
+    <script type="text/javascript" src="./js/index.js"></script>
+  </body>
+</html>

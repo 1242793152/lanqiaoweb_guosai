@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>一起会议吧</title>
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- TODO：请在下面实现需求 -->
+      <!-- 登录/注销窗口 -->
+      <div class="login">
+        <div class="left-tools">
+          <a class="close-btn"></a>
+          <a class="shrink-btn"></a>
+        </div>
+
+        <h3>登录</h3>
+        <p v-if="is_exit">
+          选择用户：<select id="selectUser" v-model="choose_user_id">
+            <option :value="value.id" v-for='value in user_list' @change="choose_user(value)">{{value.name}}</option>
+          </select>
+        </p>
+        <p v-if="is_login">当前用户为：{{choose_user_id==1?'Tom':'Lily'}}</p>
+
+        <a class="login-btn" @click="login()" v-if="is_exit">登陆</a>
+        <a class="login-btn" @click="exit()" v-if="is_login">注销</a>
+      </div>
+
+      <!-- 右侧显示用户列表窗口按钮 -->
+      <button id="show" class="right-btn" v-if="is_show_btn" @click="close_is_show_btn">
+        <span class="iconfont icon-left-arrow"></span>
+      </button>
+
+      <!-- 用户列表窗口 -->
+      <div class="user-dialog" v-if="is_show">
+        <!-- 用户列表窗口上侧工具栏 -->
+        <ul class="tools">
+          <li class="tools-left">
+            <button @click='close_user()' :class="{active:buttonBtn==0}" >
+              <span class="iconfont icon-close" ></span>
+            </button>
+            <button @click="show_self()" :class="{active:buttonBtn==1}" >
+              <span class="iconfont icon-dialog"></span>
+            </button>
+            <button @click="add_user()" :class="{active:buttonBtn==2}" >
+              <span class="iconfont icon-list"></span>
+            </button>
+          </li>
+          <li class="tools-right">
+            <button class="show-list" @click="close_is_show()" >
+              <span class="iconfont icon-retract"></span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- 用户列表 -->
+        <ul class="say-list" >
+          <li>
+            <span class="iconfont icon-microphone"></span>
+          </li>
+          <li class="line"></li>
+          <li>正在讲话：Tom；</li>
+        </ul>
+
+        <ul class="user-list" v-if="user_list_show">
+          <li v-for="value in speaking_user">
+            <img class="header" :src="value.imgPath" />
+            <div class="user-name">
+              <span class="iconfont icon-user header-icon" v-if="value.isHost"></span>
+              <span class="iconfont icon-microphone"></span>
+              {{value.name}}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript" src="./js/vue.js"></script>
+    <script type="text/javascript" src="./js/axios.min.js"></script>
+    <script type="text/javascript">
+      // TODO：请在下面实现需求
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            // 存放用户列表
+            user_list:[],
+            // 选中用户
+            choose_user_id:1,
+            // 登陆状态，默认为false
+            is_login:false,
+            // 退出状态，默认为true
+            is_exit:true,
+            // 用户列表以及工具栏窗口
+            is_show:false,
+            // 用户列表窗口
+            user_list_show:true,
+            // 显示用户列表窗口按钮
+            is_show_btn:false,
+            // 正在讲话用户，以及增添用户
+            speaking_user:[],
+            // 点击的按钮
+            buttonBtn:1
+          }
+        },
+        methods: {
+          // 登陆
+          login(){
+            // 注销按钮显示，当前用户显示
+            this.is_login = true
+            // 登陆按钮消失
+            this.is_exit = false
+            // 用户列表窗口显示以及用户窗口按钮显示
+            this.is_show_btn = false
+            this.is_show = true
+            // 将正在讲话用户添加入 正在讲话用户数组
+            this.user_list.forEach(ele=>{
+              if(ele.id==this.choose_user_id)this.speaking_user.push(ele)
+            })
+            this.buttonBtn = 1
+          },
+          // 注销
+          exit(){
+            this.is_login = false
+            this.is_exit = true
+            this.is_show_btn = false
+            this.is_show = false
+            // 清空已经写入到数组的正在讲话用户
+            this.speaking_user = []
+          },
+          // 隐藏用户列表窗口
+          close_is_show(){
+            this.is_show = false
+            this.is_show_btn = true  
+          },
+          // 隐藏用户列表
+          close_user(){
+            this.user_list_show = false
+            this.buttonBtn = 0
+          },
+          // 只展示本身自己
+          show_self(){
+            this.user_list_show = true
+            this.speaking_user.splice(1,1)
+            this.buttonBtn = 1
+          },
+          // 增加用户
+          add_user(){
+            this.buttonBtn = 2
+            this.user_list_show = true
+            this.user_list.forEach(ele=>{
+              if(ele.id!=this.speaking_user[0].id && this.speaking_user.length ==1){
+                this.speaking_user.push(ele)
+              }
+            })
+          },
+          // 展示用户列表窗口
+          close_is_show_btn(){
+            this.is_show = true
+            this.is_show_btn = false
+          }
+        },
+        mounted() {
+          axios.get(`./js/userList.json`).then(res=>this.user_list=JSON.parse(JSON.stringify(res.data)))
+        },
+      });
+    </script>
+  </body>
+</html>

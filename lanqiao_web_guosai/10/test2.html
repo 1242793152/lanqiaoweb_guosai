@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+ <script>
+ let arr = [
+ {id: 5, name: '部门5', pid: 2},
+    {id: 1, name: '部门1', pid: 0},
+    {id: 2, name: '部门2', pid: 1},
+    {id: 3, name: '部门3', pid: 1},
+    {id: 4, name: '部门4', pid: 5},
+    
+]
+
+function arrayToTree(items) {
+  // 存放结果
+ const result = []
+//  将数组中的所有对象的数据map到对象中，其中创建的对象的key是数组内每一个对象的id值
+ const map_obj = {}
+ 
+//  遍历对象
+for(const key in items){
+
+  const {id,pid} = items[key]
+  if(!map_obj[id]){
+    map_obj[id] = {
+      children:[]
+    }
+  }
+
+  map_obj[id] = {
+    ...items[key],
+    children:map_obj[id]['children']
+  }
+  // 数组内的每一个对象都是tree结构的一个分支
+  const tree_item = map_obj[id]
+
+  // pid=0，说明该数组内的这个对象是这个tree结构的根
+  if(pid === 0){
+    result.push(tree_item)
+  }else{
+    // 如果pid不等于0，那么说明这个数组内的这个对象，是tree结构的某一环
+    // 此时根绝pid判断其父结构是否在树中，如果不在，那么在map_obj中预先创建坑位
+    // 给其父结构准备，并且将这个子对象直接放入到其父结构的children数组中，为36行的解构对象做准备
+    if(!map_obj[pid]){
+      map_obj[pid] = {
+        children:[]
+      }
+    }
+    // 其父结构已经存在了，那么把这个子对象直接放入到其父结构的children数组中
+    map_obj[pid]['children'].push(tree_item)
+  }
+}
+console.log(result)
+}
+
+console.log(arrayToTree(arr))
+ </script> 
+</body>
+</html>

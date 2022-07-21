@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // function digui(n){
+    //   if(n<=1)return 1
+    //   return n*digui(n-1)
+    // }
+  let menuList = [
+  { parentId: -1, name: "添加管理员", id: 10, auth: "admin" },
+  { parentId: -1, name: "商品管理", id: 1, auth: "product" },  
+  { parentId: 4, name: "商品分类", id: 5, auth: "category" },
+  { parentId: 10, name: "管理员权限分配", id: 11, auth: "admin-auth" },
+  { parentId: 5, name: "添加分类", id: 8, auth: "addClassification" },
+  { parentId: 4, name: "商品上架", id: 6, auth: "product" },
+  { parentId: -1, name: "评论管理", id: 2, auth: "comments" },
+  { parentId: -1, name: "个人中心", id: 3, auth: "profile" },
+  { parentId: 1, name: "商品列表", id: 4, auth: "productList" },
+]
+let account = 0
+function arrayToTree(items) {
+  const result = [];   // 存放结果集
+  const itemMap = {};  // 
+  for (const item of items) {
+    const id = item.id;
+    const pid = item.parentId;
+
+    if (!itemMap[id]) {
+      itemMap[id] = {
+        children: [],
+      }
+    }
+    account++
+    itemMap[id] = {
+      ...item,
+      children: itemMap[id]['children']
+    }
+    console.log(itemMap[id])
+    const treeItem =  itemMap[id];
+
+    if (pid === -1) {
+      result.push(treeItem);
+    } else {
+      if (!itemMap[pid]) {
+        console.log('start')
+        itemMap[pid] = {
+          children: [],
+        }
+      }
+      itemMap[pid].children.push(treeItem)
+      console.log(itemMap[pid])
+    }
+    console.log(itemMap)
+    console.log(account)
+  }
+  return result;
+}
+
+console.log(arrayToTree(menuList))
+
+  </script>
+</body>
+</html>
